@@ -30,3 +30,7 @@
   color: blue;
   cursor: pointer;
 }
+.mode {
+  color: whitesmoke;
+  background-color: rgb(18, 18, 18);
+}

@@ -9,15 +9,17 @@ import {
 import { FaInstagram } from "react-icons/fa";
 import { NavLink, Outlet } from "react-router-dom";
 import EditProfile from "../../../components/modals/EditProfile";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { editProfileModel } from "../../../redux/slice";
 
 const ProfileLayout = () => {
+  const { darkMode } = useSelector((state) => state.service);
+
   const _300 = useMediaQuery("(min-width:300px)");
   const _500 = useMediaQuery("(min-width:500px)");
 
   const dispatch = useDispatch();
-  
+
   const handleOpenEditModal = () => {
     dispatch(editProfileModel(true));
   };
@@ -70,7 +72,7 @@ const ProfileLayout = () => {
       <Button
         size="large"
         sx={{
-          color: "black",
+          color: darkMode ? "whitesmoke" : "black",
           width: "100%",
           textAlign: "center",
           border: "1px solid gray",
@@ -91,13 +93,22 @@ const ProfileLayout = () => {
         borderBottom={"2px solid gray"}
         fontSize={_500 ? "1.2rem" : _300 ? "1.1rem" : "0.9rem"}
       >
-        <NavLink to={"/profile/threads/1"} className={"link"}>
+        <NavLink
+          to={"/profile/threads/1"}
+          className={`link ${darkMode ? "mode" : ""}`}
+        >
           Threads
         </NavLink>
-        <NavLink to={"/profile/replies/1"} className={"link"}>
+        <NavLink
+          to={"/profile/replies/1"}
+          className={`link ${darkMode ? "mode" : ""}`}
+        >
           Replies
         </NavLink>
-        <NavLink to={"/profile/reposts/1"} className={"link"}>
+        <NavLink
+          to={"/profile/reposts/1"}
+          className={`link ${darkMode ? "mode" : ""}`}
+        >
           Reposts
         </NavLink>
       </Stack>

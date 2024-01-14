@@ -2,10 +2,12 @@ import { Stack, Typography, useMediaQuery } from "@mui/material";
 import PostOne from "./post/PostOne";
 import PostTwo from "./post/PostTwo";
 import { IoIosMore } from "react-icons/io";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toggleMyMenu } from "../../redux/slice";
 
 const Post = () => {
+  const { darkMode } = useSelector((state) => state.service);
+
   const _300 = useMediaQuery("(min-width:300px)");
   const _400 = useMediaQuery("(min-width:400px)");
   const _700 = useMediaQuery("(min-width:700px)");
@@ -20,12 +22,10 @@ const Post = () => {
     <>
       <Stack
         flexDirection={"row"}
-        border={"2px solid rgb(246, 248, 249)"}
-        borderRadius={"20px"}
+        borderBottom={"3px solid rgb(200, 200, 200)"}
         p={_700 ? 2 : _400 ? 1 : "5px"}
         mx={"auto"}
         sx={{
-          bgcolor: " rgb(246, 248, 249)",
           ":hover": {
             cursor: "pointer",
             boxShadow: _700
@@ -48,7 +48,7 @@ const Post = () => {
         >
           <Typography
             variant="p"
-            color={"GrayText"}
+            color={darkMode ? "white" : "GrayText"}
             fontSize={"1rem"}
             position={"relative"}
             top={2}

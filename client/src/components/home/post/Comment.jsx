@@ -1,9 +1,11 @@
 import { Avatar, Stack, Typography, useMediaQuery } from "@mui/material";
 import { IoIosMore } from "react-icons/io";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toggleMyMenu } from "../../../redux/slice";
 
 const Comment = () => {
+  const { darkMode } = useSelector((state) => state.service);
+
   const _700 = useMediaQuery("(min-width:700px)");
 
   const dispatch = useDispatch();
@@ -38,7 +40,7 @@ const Comment = () => {
           flexDirection={"row"}
           gap={1}
           alignItems={"center"}
-          color={"GrayText"}
+          color={darkMode ? "whitesmoke" : "GrayText"}
           fontSize={"0.9rem"}
         >
           <p>24min</p>

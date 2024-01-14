@@ -9,26 +9,32 @@ import Replies from "./pages/protected/profile/Replies";
 import Reposts from "./pages/protected/profile/Reposts";
 import SinglePost from "./pages/protected/SinglePost";
 import Register from "./pages/Register";
+import { Box } from "@mui/material";
+import { useSelector } from "react-redux";
 
 const App = () => {
+  const { darkMode } = useSelector((state) => state.service);
+
   return (
     <>
-      <BrowserRouter>
-        <Routes>
-          <Route exact path="/re" element={<Register />} />
-          <Route exact path="/" element={<ProtectedLayout />}>
-            <Route exact path="" element={<Home />} />
-            <Route exact path="post/:id" element={<SinglePost />} />
-            <Route exact path="search" element={<Search />} />
-            <Route exact path="profile/" element={<ProfileLayout />}>
-              <Route exact path="threads/:id" element={<Threads />} />
-              <Route exact path="replies/:id" element={<Replies />} />
-              <Route exact path="reposts/:id" element={<Reposts />} />
+      <Box minHeight={"100vh"} className={darkMode ? "mode" : ''}>
+        <BrowserRouter>
+          <Routes>
+            <Route exact path="/re" element={<Register />} />
+            <Route exact path="/" element={<ProtectedLayout />}>
+              <Route exact path="" element={<Home />} />
+              <Route exact path="post/:id" element={<SinglePost />} />
+              <Route exact path="search" element={<Search />} />
+              <Route exact path="profile/" element={<ProfileLayout />}>
+                <Route exact path="threads/:id" element={<Threads />} />
+                <Route exact path="replies/:id" element={<Replies />} />
+                <Route exact path="reposts/:id" element={<Reposts />} />
+              </Route>
             </Route>
-          </Route>
-          <Route path="*" element={<Error />} />
-        </Routes>
-      </BrowserRouter>
+            <Route path="*" element={<Error />} />
+          </Routes>
+        </BrowserRouter>
+      </Box>
     </>
   );
 };

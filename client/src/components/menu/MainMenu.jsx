@@ -1,14 +1,19 @@
 import { Menu, MenuItem } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleMainMenu } from "../../redux/slice";
+import { toggleColorMode, toggleMainMenu } from "../../redux/slice";
 
 const MainMenu = () => {
   const { anchorE1 } = useSelector((state) => state.service);
-  
+
   const dispatch = useDispatch();
 
   const handleClose = () => {
     dispatch(toggleMainMenu(null));
+  };
+
+  const handleToggleTheme = () => {
+    handleClose();
+    dispatch(toggleColorMode());
   };
 
   return (
@@ -20,7 +25,7 @@ const MainMenu = () => {
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         transformOrigin={{ vertical: "top", horizontal: "right" }}
       >
-        <MenuItem onClick={handleClose}>Profile</MenuItem>
+        <MenuItem onClick={handleToggleTheme}>Toggle Theme</MenuItem>
         <MenuItem onClick={handleClose}>My account</MenuItem>
         <MenuItem onClick={handleClose}>Logout</MenuItem>
       </Menu>

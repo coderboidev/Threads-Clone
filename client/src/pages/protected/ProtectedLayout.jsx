@@ -8,11 +8,16 @@ import MyMenu from "../../components/menu/MyMenu";
 const ProtectedLayout = () => {
   return (
     <>
-      <Stack flexDirection={"column"} maxWidth={"800px"} mx={"auto"}>
+      <Stack
+        flexDirection={"column"}
+        maxWidth={"800px"}
+        minWidth={"100vh"}
+        mx={"auto"}
+      >
         <Header />
         <AddPost />
         <MainMenu />
-        <MyMenu/>
+        <MyMenu />
         <Outlet />
       </Stack>
     </>

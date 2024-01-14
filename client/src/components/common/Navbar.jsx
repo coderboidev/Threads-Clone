@@ -6,11 +6,13 @@ import { CiHeart } from "react-icons/ci";
 import { RxAvatar } from "react-icons/rx";
 import { FiArrowLeft } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addPostModal } from "../../redux/slice";
 import { useEffect, useState } from "react";
 
 const Navbar = () => {
+  const { darkMode } = useSelector((state) => state.service);
+
   const _700 = useMediaQuery("(min-width:700px)");
   const _300 = useMediaQuery("(min-width:300px)");
 
@@ -52,22 +54,30 @@ const Navbar = () => {
             size={_300 ? 32 : 24}
             className="image-icon"
             onClick={handleNavigate}
+            color={darkMode ? "white" : "black"}
           />
         ) : null}
-        <Link to={"/"} className="link">
-          <GoHome size={_300 ? 32 : 24} />
+        <Link to={"/"} className="link ">
+          <GoHome size={_300 ? 32 : 24} color={darkMode ? "white" : "black"} />
         </Link>
         <Link to={"/search"} className="link">
-          <IoIosSearch size={_300 ? 32 : 24} />
+          <IoIosSearch
+            size={_300 ? 32 : 24}
+            color={darkMode ? "white" : "black"}
+          />
         </Link>
         <TbEdit
           size={_300 ? 32 : 24}
           onClick={handleAddPost}
           className="image-icon"
+          color={darkMode ? "white" : "black"}
         />
-        <CiHeart size={_300 ? 32 : 24} />
+        <CiHeart size={_300 ? 32 : 24} color={darkMode ? "white" : "black"} />
         <Link to={"/profile/threads/1"} className="link">
-          <RxAvatar size={_300 ? 32 : 24} />
+          <RxAvatar
+            size={_300 ? 32 : 24}
+            color={darkMode ? "white" : "black"}
+          />
         </Link>
       </Stack>
     </>
