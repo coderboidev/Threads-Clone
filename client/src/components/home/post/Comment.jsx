@@ -1,18 +1,57 @@
-import { Avatar, Stack, Typography, useMediaQuery } from "@mui/material";
+import {
+  Avatar,
+  Menu,
+  MenuItem,
+  Stack,
+  Typography,
+  useMediaQuery,
+} from "@mui/material";
 import { IoIosMore } from "react-icons/io";
-import { useDispatch, useSelector } from "react-redux";
-import { toggleMyMenu } from "../../../redux/slice";
+import {  useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import {
+  useDeleteCommentMutation,
+  useSinglePostQuery,
+} from "../../../redux/service";
 
-const Comment = () => {
-  const { darkMode } = useSelector((state) => state.service);
+const Comment = ({ e, postId }) => {
+  const { darkMode, myInfo } = useSelector((state) => state.service);
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [isAdmin, setIsAdmin] = useState();
 
   const _700 = useMediaQuery("(min-width:700px)");
 
-  const dispatch = useDispatch();
+  const [deleteComment] = useDeleteCommentMutation();
+  const { refetch } = useSinglePostQuery(postId);
 
-  const handleMenu = (e) => {
-    dispatch(toggleMyMenu(e.currentTarget));
+  const handleClose = () => {
+    setAnchorEl(null);
   };
+
+  const handleDeleteComment = async () => {
+    const info = {
+      postId,
+      id: e?._id,
+    };
+    await deleteComment(info);
+    handleClose();
+    refetch();
+  };
+
+  const checkIsAdmin = () => {
+    if (e && myInfo) {
+      if (e.admin._id === myInfo._id) {
+        setIsAdmin(true);
+        return;
+      }
+    }
+    setIsAdmin(false);
+  };
+
+  useEffect(() => {
+    checkIsAdmin();
+  }, [e]);
 
   return (
     <>
@@ -29,10 +68,10 @@ const Comment = () => {
           <Avatar src="" alt="" />
           <Stack flexDirection={"column"}>
             <Typography variant="h6" fontWeight={"bold"} fontSize={"0.9rem"}>
-              Salman_Khan
+              {e ? e.admin.userName : ""}
             </Typography>
             <Typography variant="p" fontSize={"0.9rem"}>
-              Salman_Khan
+              {e ? e.text : ""}
             </Typography>
           </Stack>
         </Stack>
@@ -44,9 +83,25 @@ const Comment = () => {
           fontSize={"0.9rem"}
         >
           <p>24min</p>
-          <IoIosMore size={_700 ? 28 : 20} onClick={handleMenu} />
+          {isAdmin ? (
+            <IoIosMore
+              size={_700 ? 28 : 20}
+              onClick={(e) => setAnchorEl(e.currentTarget)}
+            />
+          ) : (
+            <IoIosMore size={_700 ? 28 : 20} />
+          )}
         </Stack>
       </Stack>
+      <Menu
+        anchorEl={anchorEl}
+        open={anchorEl !== null ? true : false}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        transformOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <MenuItem onClick={handleDeleteComment}>Delete</MenuItem>
+      </Menu>
     </>
   );
 };

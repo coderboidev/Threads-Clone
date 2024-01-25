@@ -44,8 +44,8 @@ exports.signIn = async (req, res) => {
     res.cookie("token", accessToken, {
       maxAge: 1000 * 60 * 60 * 24 * 30,
       httpOnly: true,
-      secure: true,
       sameSite: "none",
+      secure: true,
     });
     res.status(201).json({ msg: "User signed in successfully !" });
   } catch (err) {
@@ -98,30 +98,22 @@ exports.userDetails = async (req, res) => {
     const user = await User.findById(id)
       .select("-password")
       .populate("followers")
-      .populate("threads")
       .populate("replies")
-      .populate("reposts");
+      .populate({
+        path: "threads",
+        populate: [{ path: "likes" }, { path: "comments" }, { path: "admin" }],
+      })
+      .populate({
+        path: "replies",
+        populate: { path: "admin" },
+      })
+      .populate({
+        path: "reposts",
+        populate: [{ path: "likes" }, { path: "comments" }],
+      });
     res.status(200).json({ msg: "User details fetched !", user });
   } catch (err) {
     res.status(400).json({ msg: "Error in userDetails !", err: err.message });
-  }
-};
-
-exports.allUsers = async (req, res) => {
-  try {
-    const { page } = req.query;
-    let pageNumber = page;
-    if (!page || page === undefined) {
-      pageNumber = 1;
-    }
-    const users = await User.find({})
-      .skip((pageNumber - 1) * 3)
-      .limit(3)
-      .select("-password")
-      .populate("followers");
-    res.status(200).json({ msg: "Users fetched !", users });
-  } catch (err) {
-    res.status(400).json({ msg: "Error in allUsers !", err: err.message });
   }
 };
 
@@ -207,5 +199,42 @@ exports.updateProfile = async (req, res) => {
     res.status(201).json({ msg: "Profile updated !" });
   } catch (err) {
     res.status(400).json({ msg: "Error in updateProfile !", err: err.message });
+  }
+};
+
+exports.myInfo = async (req, res) => {
+  try {
+    res.status(200).json({ me: req.user });
+  } catch (err) {
+    res.status(400).json({ msg: "Error in myInfo !", err: err.message });
+  }
+};
+
+exports.logout = async (req, res) => {
+  try {
+    res.cookie("token", "", {
+      maxAge: Date.now(),
+      httpOnly: true,
+      sameSite: "none",
+      secure: true,
+    });
+    res.status(201).json({ msg: "User Logged out !" });
+  } catch (err) {
+    res.status(400).json({ msg: "Error in logout !", err: err.message });
+  }
+};
+
+exports.searchUser = async (req, res) => {
+  try {
+    const { query } = req.params;
+    const users = await User.find({
+      $or: [
+        { userName: { $regex: query, $options: "i" } },
+        { email: { $regex: query, $options: "i" } },
+      ],
+    });
+    res.status(200).json({ msg: "Searched users !", users });
+  } catch (err) {
+    res.status(400).json({ msg: "Error in searchUser !", err: err.message });
   }
 };

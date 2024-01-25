@@ -11,7 +11,7 @@ import { addPostModal } from "../../redux/slice";
 import { useEffect, useState } from "react";
 
 const Navbar = () => {
-  const { darkMode } = useSelector((state) => state.service);
+  const { darkMode , myInfo } = useSelector((state) => state.service);
 
   const _700 = useMediaQuery("(min-width:700px)");
   const _300 = useMediaQuery("(min-width:300px)");
@@ -29,10 +29,6 @@ const Navbar = () => {
     setShowArrow(false);
   };
 
-  useEffect(() => {
-    checkArrow();
-  }, [window.location.pathname]);
-
   const handleAddPost = () => {
     dispatch(addPostModal(true));
   };
@@ -40,6 +36,10 @@ const Navbar = () => {
   const handleNavigate = () => {
     navigate(-1);
   };
+
+  useEffect(() => {
+    checkArrow();
+  }, [window.location.pathname]);
 
   return (
     <>
@@ -73,7 +73,7 @@ const Navbar = () => {
           color={darkMode ? "white" : "black"}
         />
         <CiHeart size={_300 ? 32 : 24} color={darkMode ? "white" : "black"} />
-        <Link to={"/profile/threads/1"} className="link">
+        <Link to={`/profile/threads/${myInfo?._id}`} className="link">
           <RxAvatar
             size={_300 ? 32 : 24}
             color={darkMode ? "white" : "black"}

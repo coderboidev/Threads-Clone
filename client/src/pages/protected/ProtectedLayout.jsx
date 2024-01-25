@@ -1,4 +1,4 @@
-import { Stack } from "@mui/material";
+import { Stack, useMediaQuery } from "@mui/material";
 import { Outlet } from "react-router-dom";
 import Header from "../../components/common/Header";
 import AddPost from "../../components/modals/AddPost";
@@ -6,13 +6,16 @@ import MainMenu from "../../components/menu/MainMenu";
 import MyMenu from "../../components/menu/MyMenu";
 
 const ProtectedLayout = () => {
+  const _700 = useMediaQuery("(min-width:700px)");
+
   return (
     <>
       <Stack
         flexDirection={"column"}
-        maxWidth={"800px"}
-        minWidth={"100vh"}
+        maxWidth={_700 ? "800px" : "90%"}
+        minWidth={"100%"}
         mx={"auto"}
+        overflow={"hidden"}
       >
         <Header />
         <AddPost />

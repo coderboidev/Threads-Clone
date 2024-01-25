@@ -1,5 +1,7 @@
+const mongoose = require("mongoose");
 const Comment = require("../models/comment-model");
 const Post = require("../models/post-model");
+const User = require("../models/user-model");
 
 exports.addComment = async (req, res) => {
   try {
@@ -18,12 +20,20 @@ exports.addComment = async (req, res) => {
     const comment = new Comment({
       text,
       admin: req.user._id,
+      post: postExists._id,
     });
     const newComment = await comment.save();
     await Post.findByIdAndUpdate(
       id,
       {
         $push: { comments: newComment._id },
+      },
+      { new: true }
+    );
+    const demo = await User.findByIdAndUpdate(
+      req.user._id,
+      {
+        $push: { replies: newComment._id },
       },
       { new: true }
     );
@@ -47,9 +57,11 @@ exports.deleteComment = async (req, res) => {
     if (!commentExists) {
       return res.status(400).json({ msg: "No such comment !" });
     }
-    if (postExists.comments.includes(id)) {
-      const isAuthorized = commentExists.admin === req.user._id;
-      if (!isAuthorized) {
+    const newId = new mongoose.Types.ObjectId(id);
+    if (postExists.comments.includes(newId)) {
+      const id1 = commentExists.admin._id.toString();
+      const id2 = req.user._id.toString();
+      if (id1 !== id2) {
         return res
           .status(400)
           .json({ msg: "You are not authorized to delete comment !" });
@@ -58,6 +70,13 @@ exports.deleteComment = async (req, res) => {
         postId,
         {
           $pull: { comments: id },
+        },
+        { new: true }
+      );
+      await User.findByIdAndUpdate(
+        req.user._id,
+        {
+          $pull: { replies: id },
         },
         { new: true }
       );

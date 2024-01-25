@@ -16,6 +16,7 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
+      select: false,
     },
     bio: {
       type: String,
@@ -30,7 +31,7 @@ const userSchema = new mongoose.Schema(
     },
     followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     threads: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
-    replies: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
+    replies: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
     reposts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
   },
   { timestamps: true }

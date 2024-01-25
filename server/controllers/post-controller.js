@@ -31,6 +31,9 @@ exports.addPost = async (req, res) => {
       }
       post.admin = req.user._id;
       const newPost = await post.save();
+      await User.findByIdAndUpdate(req.user._id, {
+        $push: { threads: newPost._id },
+      });
       res.status(201).json({ msg: "Post created !", newPost });
     });
   } catch (err) {
@@ -46,7 +49,7 @@ exports.allPost = async (req, res) => {
       pageNumber = 1;
     }
     const posts = await Post.find({})
-      .sort({ updatedAt: -1 })
+      .sort({ createdAt: -1 })
       .skip((pageNumber - 1) * 3)
       .limit(3)
       .populate("admin")
@@ -68,17 +71,18 @@ exports.deletePost = async (req, res) => {
   try {
     const { id } = req.params;
     if (!id) {
-      return res.status(400).json({ msg: "No id is provided !" });
+      return res.status(400).json({ msg: "No id is provided!" });
     }
-    const postExists = await Post.findById(id);
+    const postExists = await Post.findById(id).populate("admin");
     if (!postExists) {
-      return res.status(400).json({ msg: "No such post is available !" });
+      return res.status(400).json({ msg: "No such post is available!" });
     }
-    const isPermitted = postExists.admin === req.user._id;
-    if (!isPermitted) {
+    const userId = req.user._id.toString();
+    const adminId = postExists.admin._id.toString();
+    if (userId !== adminId) {
       return res
         .status(400)
-        .json({ msg: "You are not authorized to delete this post !" });
+        .json({ msg: "You are not authorized to delete this post!" });
     }
     if (postExists.media) {
       await cloudinary.v2.uploader.destroy(
@@ -91,25 +95,21 @@ exports.deletePost = async (req, res) => {
     await Comment.deleteMany({ _id: { $in: postExists.comments } });
     await User.updateMany(
       {
-        $or: [
-          { threads: mongoose.Types.ObjectId(id) },
-          { reposts: mongoose.Types.ObjectId(id) },
-          { replies: mongoose.Types.ObjectId(id) },
-        ],
+        $or: [{ threads: id }, { reposts: id }, { replies: id }],
       },
       {
         $pull: {
-          threads: mongoose.Schema.Types.ObjectId(id),
-          reposts: mongoose.Schema.Types.ObjectId(id),
-          replies: mongoose.Schema.Types.ObjectId(id),
+          threads: id,
+          reposts: id,
+          replies: id,
         },
       },
       { new: true }
     );
-    await Post.findByIdAndDelete(postExists._id);
-    res.status(201).json({ msg: "Post deleted !" });
+    await Post.findByIdAndDelete(id);
+    res.status(201).json({ msg: "Post deleted!" });
   } catch (err) {
-    res.status(400).json({ msg: "Error in deletePost !", err: err.message });
+    res.status(400).json({ msg: "Error in deletePost!", err: err.message });
   }
 };
 
@@ -143,5 +143,50 @@ exports.likePost = async (req, res) => {
     return res.status(201).json({ msg: "Post liked !" });
   } catch (err) {
     res.status(400).json({ msg: "Error in likePost !", err: err.message });
+  }
+};
+
+exports.repost = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (id) {
+      const post = await Post.findById(id);
+      if (!post) {
+        return res.status(400).json({ msg: "No such post !" });
+      }
+      const admin = await User.findById(req.user._id);
+      const newId = new mongoose.Types.ObjectId(id);
+      if (admin.reposts.includes(newId)) {
+        return res.status(200).json({ msg: "This post is already reposted !" });
+      }
+      await User.findByIdAndUpdate(
+        req.user._id,
+        {
+          $push: { reposts: post._id },
+        },
+        { new: true }
+      );
+      return res.status(201).json({ msg: "Post Reposted !" });
+    }
+  } catch (err) {
+    res.status(400).json({ msg: "Error in repost !", err: err.message });
+  }
+};
+
+exports.singlePost = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const post = await Post.findById(id)
+      .populate("admin")
+      .populate("likes")
+      .populate({
+        path: "comments",
+        populate: {
+          path: "admin",
+        },
+      });
+    res.status(200).json({ msg: "Single Post fetched !", post });
+  } catch (err) {
+    res.status(400).json({ msg: "Error in singlePost !", err: err.message });
   }
 };

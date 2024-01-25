@@ -3,10 +3,13 @@ import PostOne from "./post/PostOne";
 import PostTwo from "./post/PostTwo";
 import { IoIosMore } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleMyMenu } from "../../redux/slice";
+import { addPostId, toggleMyMenu } from "../../redux/slice";
+import { useEffect, useState } from "react";
 
-const Post = () => {
-  const { darkMode } = useSelector((state) => state.service);
+const Post = ({ e }) => {
+  const { darkMode, myInfo } = useSelector((state) => state.service);
+
+  const [isAdmin, setIsAdmin] = useState();
 
   const _300 = useMediaQuery("(min-width:300px)");
   const _400 = useMediaQuery("(min-width:400px)");
@@ -14,14 +17,28 @@ const Post = () => {
 
   const dispatch = useDispatch();
 
-  const handleOpenMenu = (e) => {
-    dispatch(toggleMyMenu(e.currentTarget));
+  const handleOpenMenu = (event) => {
+    dispatch(addPostId(e._id));
+    dispatch(toggleMyMenu(event.currentTarget));
   };
+
+  const checkIsAdmin = () => {
+    if (e?.admin._id === myInfo._id) {
+      setIsAdmin(true);
+      return;
+    }
+    setIsAdmin(false);
+  };
+
+  useEffect(() => {
+    checkIsAdmin();
+  }, [e]);
 
   return (
     <>
       <Stack
         flexDirection={"row"}
+        justifyContent={"space-between"}
         borderBottom={"3px solid rgb(200, 200, 200)"}
         p={_700 ? 2 : _400 ? 1 : "5px"}
         mx={"auto"}
@@ -34,11 +51,11 @@ const Post = () => {
           },
           transition: "all ease-in-out 0.3s",
         }}
-        maxWidth={"90%"}
+        width={_700 ? "70%" : _300 ? "90%" : "100%"}
       >
-        <Stack flexDirection={"row"} gap={_700 ? 2 : _300 ? 1 : 0}>
-          <PostOne />
-          <PostTwo />
+        <Stack flexDirection={"row"} gap={_700 ? 2 : _300 ? 1 : 1}>
+          <PostOne e={e} />
+          <PostTwo e={e} />
         </Stack>
         <Stack
           flexDirection={"row"}
@@ -55,7 +72,11 @@ const Post = () => {
           >
             24h
           </Typography>
-          <IoIosMore size={_700 ? 28 : 20} onClick={handleOpenMenu} />
+          {isAdmin ? (
+            <IoIosMore size={_700 ? 28 : 20} onClick={handleOpenMenu} />
+          ) : (
+            <IoIosMore size={_700 ? 28 : 20} />
+          )}
         </Stack>
       </Stack>
     </>

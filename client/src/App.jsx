@@ -11,26 +11,32 @@ import SinglePost from "./pages/protected/SinglePost";
 import Register from "./pages/Register";
 import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
+import { useMyInfoQuery } from "./redux/service";
 
 const App = () => {
   const { darkMode } = useSelector((state) => state.service);
 
+  const { data } = useMyInfoQuery();
+
   return (
     <>
-      <Box minHeight={"100vh"} className={darkMode ? "mode" : ''}>
+      <Box minHeight={"100vh"} className={darkMode ? "mode" : ""}>
         <BrowserRouter>
           <Routes>
-            <Route exact path="/re" element={<Register />} />
-            <Route exact path="/" element={<ProtectedLayout />}>
-              <Route exact path="" element={<Home />} />
-              <Route exact path="post/:id" element={<SinglePost />} />
-              <Route exact path="search" element={<Search />} />
-              <Route exact path="profile/" element={<ProfileLayout />}>
-                <Route exact path="threads/:id" element={<Threads />} />
-                <Route exact path="replies/:id" element={<Replies />} />
-                <Route exact path="reposts/:id" element={<Reposts />} />
+            {data ? (
+              <Route exact path="/" element={<ProtectedLayout />}>
+                <Route exact path="" element={<Home />} />
+                <Route exact path="post/:id" element={<SinglePost />} />
+                <Route exact path="search" element={<Search />} />
+                <Route exact path="profile/" element={<ProfileLayout />}>
+                  <Route exact path="threads/:id" element={<Threads />} />
+                  <Route exact path="replies/:id" element={<Replies />} />
+                  <Route exact path="reposts/:id" element={<Reposts />} />
+                </Route>
               </Route>
-            </Route>
+            ) : (
+              <Route exact path="/" element={<Register />} />
+            )}
             <Route path="*" element={<Error />} />
           </Routes>
         </BrowserRouter>
