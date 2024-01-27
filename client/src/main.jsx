@@ -6,11 +6,16 @@ import { Provider } from "react-redux";
 import { store } from "./redux/store.js";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { HelmetProvider } from "react-helmet-async";
+
+const helmetContext = {};
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <HelmetProvider context={helmetContext}>
+        <App />
+      </HelmetProvider>
       <ToastContainer />
     </Provider>
   </React.StrictMode>

@@ -20,6 +20,7 @@ import { Bounce, toast } from "react-toastify";
 const EditProfile = lazy(() =>
   import("../../../components/modals/EditProfile")
 );
+import { Helmet } from "react-helmet-async";
 
 const ProfileLayout = () => {
   const dispatch = useDispatch();
@@ -103,6 +104,15 @@ const ProfileLayout = () => {
 
   return (
     <>
+      <Helmet>
+        <title>
+          {data
+            ? data.user
+              ? data.user.userName + " | Threads clone"
+              : ""
+            : " Threads Clone | App by Aditya jawanjal"}
+        </title>
+      </Helmet>
       <Stack
         flexDirection={"column"}
         gap={2}

@@ -9,6 +9,7 @@ const Loading = () => {
         height={"100%"}
         justifyContent={"center"}
         alignItems={"center"}
+        my={5}
       >
         <CircularProgress color="success" />
       </Stack>

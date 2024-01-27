@@ -35,7 +35,7 @@ const Home = () => {
               return <Post key={e._id} e={e} />;
             })
           ) : (
-            <Typography variant="h6" textAlign={"center"}>
+            <Typography variant="p" textAlign={"center"}>
               No Posts yet !
             </Typography>
           )
