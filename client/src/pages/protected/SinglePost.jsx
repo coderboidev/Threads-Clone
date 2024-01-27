@@ -1,10 +1,12 @@
+import { Suspense, lazy, useCallback, useEffect, useState } from "react";
 import { Stack, TextField } from "@mui/material";
-import Post from "../../components/home/Post";
-import Comment from "../../components/home/post/Comment";
 import { useParams } from "react-router-dom";
 import { useAddCommentMutation, useSinglePostQuery } from "../../redux/service";
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { Bounce, toast } from "react-toastify";
+
+const Loading = lazy(() => import("../../components/common/Loading"));
+const Comment = lazy(() => import("../../components/home/post/Comment"));
+const Post = lazy(() => import("../../components/home/Post"));
 
 const SinglePost = () => {
   const params = useParams();
@@ -23,20 +25,40 @@ const SinglePost = () => {
       await addComment(info);
     }
   };
-
+  
   useEffect(() => {
     if (addCommentData.isSuccess) {
       setComment();
       refetch();
-      console.log(addCommentData.data);
+      toast.success(addCommentData.data.msg, {
+        position: "top-center",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Bounce,
+      });
     }
     if (addCommentData.isError) {
-      console.log(addCommentData.error.data);
+      toast.error(addCommentData.error.data.msg, {
+        position: "top-center",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Bounce,
+      });
     }
   }, [addCommentData.isSuccess, addCommentData.isError]);
 
   return (
-    <>
+    <Suspense fallback={<Loading />}>
       <Stack flexDirection={"column"} my={5} gap={2}>
         <Post e={data?.post} />
         <Stack flexDirection={"column"} gap={2} width={"80%"} mx={"auto"}>
@@ -57,7 +79,7 @@ const SinglePost = () => {
           value={comment ? comment : ""}
         />
       </Stack>
-    </>
+    </Suspense>
   );
 };
 

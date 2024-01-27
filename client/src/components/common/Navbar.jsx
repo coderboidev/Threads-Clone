@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Stack, useMediaQuery } from "@mui/material";
 import { GoHome } from "react-icons/go";
 import { IoIosSearch } from "react-icons/io";
@@ -8,7 +9,6 @@ import { FiArrowLeft } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addPostModal } from "../../redux/slice";
-import { useEffect, useState } from "react";
 
 const Navbar = () => {
   const { darkMode , myInfo } = useSelector((state) => state.service);

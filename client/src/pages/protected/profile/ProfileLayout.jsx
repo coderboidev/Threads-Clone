@@ -1,3 +1,4 @@
+import { Suspense, lazy, useCallback, useEffect, useState } from "react";
 import {
   Avatar,
   Button,
@@ -8,14 +9,17 @@ import {
 } from "@mui/material";
 import { FaInstagram } from "react-icons/fa";
 import { NavLink, Outlet, useParams } from "react-router-dom";
-import EditProfile from "../../../components/modals/EditProfile";
 import { useDispatch, useSelector } from "react-redux";
 import { editProfileModel } from "../../../redux/slice";
 import {
   useFollowUserMutation,
   useUserDetailsQuery,
 } from "../../../redux/service";
-import { useEffect, useState } from "react";
+import Loading from "../../../components/common/Loading";
+import { Bounce, toast } from "react-toastify";
+const EditProfile = lazy(() =>
+  import("../../../components/modals/EditProfile")
+);
 
 const ProfileLayout = () => {
   const dispatch = useDispatch();
@@ -24,7 +28,9 @@ const ProfileLayout = () => {
   const { data } = useUserDetailsQuery(params.id);
   const [followUser, followUserData] = useFollowUserMutation();
 
-  const { darkMode, myInfo, user } = useSelector((state) => state.service);
+  const { darkMode, myInfo, openEditProfileModal } = useSelector(
+    (state) => state.service
+  );
 
   const [myAccount, setMyAccount] = useState();
   const [isFollowing, setIsFollowing] = useState();
@@ -63,10 +69,30 @@ const ProfileLayout = () => {
 
   useEffect(() => {
     if (followUserData.isSuccess) {
-      console.log(followUserData.data);
+      toast.success(deletePostData.data.msg, {
+        position: "top-center",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Bounce,
+      });
     }
     if (followUserData.isError) {
-      console.log(followUserData.error.data);
+      toast.error(followUserData.error.data.msg, {
+        position: "top-center",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Bounce,
+      });
     }
   }, [followUserData.isSuccess, followUserData.isError]);
 
@@ -182,7 +208,9 @@ const ProfileLayout = () => {
         </NavLink>
       </Stack>
       <Outlet />
-      <EditProfile />
+      <Suspense fallback={<Loading />}>
+        <EditProfile />
+      </Suspense>
     </>
   );
 };

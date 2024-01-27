@@ -1,8 +1,10 @@
+import { Suspense, lazy } from "react";
 import { Grid, Stack, useMediaQuery } from "@mui/material";
 import { IoMenu } from "react-icons/io5";
-import Navbar from "./Navbar";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleMainMenu } from "../../redux/slice";
+import Loading from "./Loading";
+const Navbar = lazy(() => import("./Navbar"));
 
 const Header = () => {
   const { darkMode } = useSelector((state) => state.service);
@@ -16,7 +18,7 @@ const Header = () => {
   };
 
   return (
-    <>
+    <Suspense fallback={<Loading/>}>
       {_700 ? (
         <Stack
           flexDirection={"row"}
@@ -97,7 +99,7 @@ const Header = () => {
           </Grid>
         </>
       )}
-    </>
+    </Suspense>
   );
 };
 

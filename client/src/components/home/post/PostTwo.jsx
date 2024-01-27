@@ -1,13 +1,11 @@
+import { useEffect, useState, memo, useCallback } from "react";
 import { Stack, Typography, useMediaQuery } from "@mui/material";
+import { useLikePostMutation, useRepostMutation } from "../../../redux/service";
 import { FaRegHeart, FaRegComment, FaRetweet, FaHeart } from "react-icons/fa6";
 import { IoMdSend } from "react-icons/io";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import {
-  useLikePostMutation,
-  useRepostMutation,
-} from "../../../redux/service";
-import { useEffect, useState } from "react";
+import { Bounce, toast } from "react-toastify";
 
 const PostTwo = ({ e }) => {
   const { darkMode, myInfo } = useSelector((state) => state.service);
@@ -29,7 +27,7 @@ const PostTwo = ({ e }) => {
       .catch((err) => console.log(err));
   };
 
-  const checkIsLiked = () => {
+  const checkIsLiked = useCallback(() => {
     if (e?.likes.length > 0) {
       if (e.likes.filter((ele) => ele._id === myInfo._id).length > 0) {
         setIsLiked(true);
@@ -37,7 +35,7 @@ const PostTwo = ({ e }) => {
       }
     }
     setIsLiked(false);
-  };
+  }, [e]);
 
   const handleRepost = async () => {
     await repost(e._id);
@@ -49,10 +47,30 @@ const PostTwo = ({ e }) => {
 
   useEffect(() => {
     if (repostData.isSuccess) {
-      console.log(repostData.data.msg);
+      toast.success(repostData.data.msg, {
+        position: "top-center",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Bounce,
+      });
     }
     if (repostData.isError) {
-      console.log(repostData.error.data.msg);
+      toast.error(repostData.error.data.msg, {
+        position: "top-center",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Bounce,
+      });
     }
   }, [repostData.isSuccess, repostData.isError]);
 
@@ -84,7 +102,8 @@ const PostTwo = ({ e }) => {
             e.media ? (
               <img
                 src={e.media}
-                alt=""
+                alt={e.admin.userName}
+                loading="lazy"
                 width={
                   _700
                     ? "400px"
@@ -170,4 +189,4 @@ const PostTwo = ({ e }) => {
   );
 };
 
-export default PostTwo;
+export default memo(PostTwo);

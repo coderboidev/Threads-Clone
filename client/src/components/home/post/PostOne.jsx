@@ -1,3 +1,4 @@
+import { memo } from "react";
 import {
   Avatar,
   AvatarGroup,
@@ -96,4 +97,4 @@ const PostOne = ({ e }) => {
   );
 };
 
-export default PostOne;
+export default memo(PostOne);

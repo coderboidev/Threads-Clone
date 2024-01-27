@@ -4,6 +4,7 @@ import { toggleColorMode, toggleMainMenu } from "../../redux/slice";
 import { useLogoutMeMutation } from "../../redux/service";
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { Bounce, toast } from "react-toastify";
 
 const MainMenu = () => {
   const { anchorE1, myInfo } = useSelector((state) => state.service);
@@ -29,13 +30,33 @@ const MainMenu = () => {
 
   useEffect(() => {
     if (logoutMeData.isSuccess) {
-      alert(logoutMeData.data.msg);
+      toast.warning(logoutMeData.data.msg, {
+        position: "top-center",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Bounce,
+      });
       navigate("/");
       window.location.reload();
     }
 
     if (logoutMeData.isError) {
-      alert(logoutMeData.error.data.msg);
+      toast.error(logoutMeData.error.data.msg, {
+        position: "top-center",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Bounce,
+      });
     }
   }, [logoutMeData.isSuccess, logoutMeData.isError]);
 

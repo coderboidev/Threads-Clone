@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   Button,
   Stack,
@@ -5,14 +6,14 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import { useState } from "react";
 import { useLoginMutation, useSigninMutation } from "../redux/service";
+import { Bounce, toast } from "react-toastify";
 
 const Register = () => {
   const _550 = useMediaQuery("(min-width:700px)");
 
-  const [loginUser] = useLoginMutation();
-  const [signupUser] = useSigninMutation();
+  const [loginUser, loginUserData] = useLoginMutation();
+  const [signupUser, SignupUserData] = useSigninMutation();
 
   const [login, setLogin] = useState(false);
   const [username, setUsername] = useState();
@@ -34,6 +35,64 @@ const Register = () => {
     const data = { userName: username, email, password };
     await signupUser(data);
   };
+
+  useEffect(() => {
+    if (loginUserData.isSuccess) {
+     toast.success(loginUserData.data.msg, {
+       position: "top-center",
+       autoClose: 2500,
+       hideProgressBar: false,
+       closeOnClick: true,
+       pauseOnHover: true,
+       draggable: true,
+       progress: undefined,
+       theme: "colored",
+       transition: Bounce,
+     });
+    }
+    if (loginUserData.isError) {
+      toast.error(loginUserData.error.data.msg, {
+        position: "top-center",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Bounce,
+      });
+    }
+  }, [loginUserData.isSuccess, loginUserData.isError]);
+
+  useEffect(() => {
+    if (SignupUserData.isSuccess) {
+      toast.success(SignupUserData.data.msg, {
+        position: "top-center",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Bounce,
+      });
+    }
+    if (SignupUserData.isError) {
+      toast.success(SignupUserData.error.data.msg, {
+        position: "top-center",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Bounce,
+      });
+    }
+  }, [SignupUserData.isSuccess, SignupUserData.isError]);
 
   return (
     <>

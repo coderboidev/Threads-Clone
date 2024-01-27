@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import {
   Avatar,
   Box,
@@ -12,9 +13,9 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { editProfileModel } from "../../redux/slice";
 import { RxCross2 } from "react-icons/rx";
-import { useEffect, useRef, useState } from "react";
 import { useUpdateProfileMutation } from "../../redux/service";
 import Loading from "../common/Loading";
+import { Bounce, toast } from "react-toastify";
 
 const EditProfile = () => {
   const { openEditProfileModal, myInfo } = useSelector(
@@ -51,10 +52,30 @@ const EditProfile = () => {
 
   useEffect(() => {
     if (updateProfileData.isSuccess) {
-      alert(updateProfileData.data.msg);
+      toast.success(updateProfileData.data.msg, {
+        position: "top-center",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Bounce,
+      });
     }
     if (updateProfileData.isError) {
-      alert(updateProfileData.error.data.msg);
+      toast.error(updateProfileData.error.data.msg, {
+        position: "top-center",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Bounce,
+      });
     }
   }, [updateProfileData.isError, updateProfileData.isSuccess]);
 

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import {
   Avatar,
   Button,
@@ -69,4 +70,4 @@ const ProfileBar = ({ e }) => {
   );
 };
 
-export default ProfileBar;
+export default memo(ProfileBar);

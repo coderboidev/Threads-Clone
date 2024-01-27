@@ -1,10 +1,10 @@
+import { Suspense, lazy, useEffect, useState } from "react";
 import { Button, Stack, Typography } from "@mui/material";
-import Input from "../../components/home/Input";
-import Post from "../../components/home/Post";
 import { useAllPostQuery } from "../../redux/service";
-import { useEffect, useState } from "react";
-import Loading from "../../components/common/Loading";
 import { useSelector } from "react-redux";
+import Loading from "../../components/common/Loading";
+const Input = lazy(() => import("../../components/home/Input"));
+const Post = lazy(() => import("../../components/home/Post"));
 
 const Home = () => {
   const [page, setPage] = useState(1);
@@ -26,7 +26,7 @@ const Home = () => {
   }, [data]);
 
   return (
-    <>
+    <Suspense fallback={<Loading />}>
       <Input />
       <Stack flexDirection={"column"} gap={2} mb={10}>
         {allPosts ? (
@@ -58,7 +58,7 @@ const Home = () => {
           </Typography>
         )
       )}
-    </>
+    </Suspense>
   );
 };
 

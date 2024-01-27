@@ -1,6 +1,8 @@
+import { Suspense, lazy } from "react";
 import { Stack, Typography, useMediaQuery } from "@mui/material";
-import Post from "../../../components/home/Post";
 import { useSelector } from "react-redux";
+import Loading from "../../../components/common/Loading";
+const Post = lazy(() => import("../../../components/home/Post"));
 
 const Reposts = () => {
   const { user } = useSelector((state) => state.service);
@@ -8,7 +10,7 @@ const Reposts = () => {
   const _700 = useMediaQuery("(min-width:700px)");
 
   return (
-    <>
+    <Suspense fallback={<Loading />}>
       {user ? (
         user.user ? (
           user.user.reposts.length > 0 ? (
@@ -38,7 +40,7 @@ const Reposts = () => {
           No Repost yet !
         </Typography>
       )}
-    </>
+    </Suspense>
   );
 };
 

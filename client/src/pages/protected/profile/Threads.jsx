@@ -1,6 +1,8 @@
+import { Suspense, lazy } from "react";
 import { Stack, Typography, useMediaQuery } from "@mui/material";
-import Post from "../../../components/home/Post";
 import { useSelector } from "react-redux";
+import Loading from "../../../components/common/Loading";
+const Post = lazy(() => import("../../../components/home/Post"));
 
 const Threads = () => {
   const { user } = useSelector((state) => state.service);
@@ -8,7 +10,7 @@ const Threads = () => {
   const _700 = useMediaQuery("(min-width:700px)");
 
   return (
-    <>
+    <Suspense fallback={<Loading/>}>
       {user ? (
         user.user ? (
           user.user.threads.length > 0 ? (
@@ -34,7 +36,7 @@ const Threads = () => {
       ) : (
         ""
       )}
-    </>
+    </Suspense>
   );
 };
 

@@ -1,3 +1,4 @@
+import { memo, useEffect, useState } from "react";
 import {
   Avatar,
   Menu,
@@ -7,12 +8,12 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { IoIosMore } from "react-icons/io";
-import {  useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import {
   useDeleteCommentMutation,
   useSinglePostQuery,
 } from "../../../redux/service";
+import { Bounce, toast } from "react-toastify";
 
 const Comment = ({ e, postId }) => {
   const { darkMode, myInfo } = useSelector((state) => state.service);
@@ -22,7 +23,7 @@ const Comment = ({ e, postId }) => {
 
   const _700 = useMediaQuery("(min-width:700px)");
 
-  const [deleteComment] = useDeleteCommentMutation();
+  const [deleteComment, deleteCommentData] = useDeleteCommentMutation();
   const { refetch } = useSinglePostQuery(postId);
 
   const handleClose = () => {
@@ -52,6 +53,35 @@ const Comment = ({ e, postId }) => {
   useEffect(() => {
     checkIsAdmin();
   }, [e]);
+
+  useEffect(() => {
+    if (deleteCommentData.isSuccess) {
+      toast.success(deleteCommentData.data.msg, {
+        position: "top-center",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Bounce,
+      });
+    }
+    if (deleteCommentData.isError) {
+      toast.error(deleteCommentData.error.data.msg, {
+        position: "top-center",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Bounce,
+      });
+    }
+  }, [deleteCommentData.isError, deleteCommentData.isSuccess]);
 
   return (
     <>
@@ -106,4 +136,4 @@ const Comment = ({ e, postId }) => {
   );
 };
 
-export default Comment;
+export default memo(Comment);

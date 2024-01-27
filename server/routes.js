@@ -3,7 +3,6 @@ const {
   signIn,
   login,
   userDetails,
-  allUsers,
   followUser,
   myInfo,
   logout,

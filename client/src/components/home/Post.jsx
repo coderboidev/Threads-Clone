@@ -1,10 +1,11 @@
+import { useEffect, useState, memo, useCallback, lazy, Suspense } from "react";
 import { Stack, Typography, useMediaQuery } from "@mui/material";
-import PostOne from "./post/PostOne";
-import PostTwo from "./post/PostTwo";
-import { IoIosMore } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 import { addPostId, toggleMyMenu } from "../../redux/slice";
-import { useEffect, useState } from "react";
+import { IoIosMore } from "react-icons/io";
+import Loading from "../common/Loading";
+const PostOne = lazy(() => import("./post/PostOne"));
+const PostTwo = lazy(() => import("./post/PostTwo"));
 
 const Post = ({ e }) => {
   const { darkMode, myInfo } = useSelector((state) => state.service);
@@ -22,17 +23,17 @@ const Post = ({ e }) => {
     dispatch(toggleMyMenu(event.currentTarget));
   };
 
-  const checkIsAdmin = () => {
+  const checkIsAdmin = useCallback(() => {
     if (e?.admin._id === myInfo._id) {
       setIsAdmin(true);
       return;
     }
     setIsAdmin(false);
-  };
+  }, [e, myInfo?._id]);
 
   useEffect(() => {
     checkIsAdmin();
-  }, [e]);
+  }, [checkIsAdmin]);
 
   return (
     <>
@@ -54,8 +55,10 @@ const Post = ({ e }) => {
         width={_700 ? "70%" : _300 ? "90%" : "100%"}
       >
         <Stack flexDirection={"row"} gap={_700 ? 2 : _300 ? 1 : 1}>
-          <PostOne e={e} />
-          <PostTwo e={e} />
+          <Suspense fallback={<Loading />}>
+            <PostOne e={e} />
+            <PostTwo e={e} />
+          </Suspense>
         </Stack>
         <Stack
           flexDirection={"row"}
@@ -83,4 +86,4 @@ const Post = ({ e }) => {
   );
 };
 
-export default Post;
+export default memo(Post);

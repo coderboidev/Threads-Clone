@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import {
   Avatar,
   Box,
@@ -13,13 +14,13 @@ import { FaImages } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
 import { addPostModal } from "../../redux/slice";
 import { RxCross2 } from "react-icons/rx";
-import { useEffect, useRef, useState } from "react";
 import { useAddPostMutation } from "../../redux/service";
 import Loading from "../common/Loading";
+import { Bounce, toast } from "react-toastify";
 
 const AddPost = () => {
   const { openAddPostModal, myInfo } = useSelector((state) => state.service);
-  
+
   const [addNewPost, addNewPostData] = useAddPostMutation();
 
   const [text, setText] = useState();
@@ -56,10 +57,30 @@ const AddPost = () => {
       setText();
       setMedia();
       dispatch(addPostModal(false));
-      alert(addNewPostData.data.msg);
+      toast.success(addNewPostData.data.msg, {
+        position: "top-center",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Bounce,
+      });
     }
     if (addNewPostData.isError) {
-      alert(addNewPostData.error.data.msg);
+      toast.error(addNewPostData.error.data.msg, {
+        position: "top-center",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Bounce,
+      });
     }
   }, [addNewPostData.isError, addNewPostData.isSuccess]);
 
