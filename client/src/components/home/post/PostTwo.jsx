@@ -21,10 +21,7 @@ const PostTwo = ({ e }) => {
   const _700 = useMediaQuery("(min-width:700px)");
 
   const handleLike = async () => {
-    await likePost(e?._id)
-      .unwrap()
-      .then((data) => console.log(data))
-      .catch((err) => console.log(err));
+    await likePost(e?._id);
   };
 
   const checkIsLiked = useCallback(() => {
