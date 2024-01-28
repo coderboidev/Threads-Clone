@@ -95,7 +95,10 @@ const Comment = ({ e, postId }) => {
         width={"90%"}
       >
         <Stack flexDirection={"row"} gap={_700 ? 2 : 1}>
-          <Avatar src="" alt="" />
+          <Avatar
+            src={e ? e.admin.profilePic : ""}
+            alt={e ? e.admin.userName : ""}
+          />
           <Stack flexDirection={"column"}>
             <Typography variant="h6" fontWeight={"bold"} fontSize={"0.9rem"}>
               {e ? e.admin.userName : ""}

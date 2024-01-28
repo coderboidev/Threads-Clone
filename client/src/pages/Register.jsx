@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 import { useLoginMutation, useSigninMutation } from "../redux/service";
 import { Bounce, toast } from "react-toastify";
+import Loading from "../components/common/Loading";
 
 const Register = () => {
   const _550 = useMediaQuery("(min-width:700px)");
@@ -38,17 +39,17 @@ const Register = () => {
 
   useEffect(() => {
     if (loginUserData.isSuccess) {
-     toast.success(loginUserData.data.msg, {
-       position: "top-center",
-       autoClose: 2500,
-       hideProgressBar: false,
-       closeOnClick: true,
-       pauseOnHover: true,
-       draggable: true,
-       progress: undefined,
-       theme: "colored",
-       transition: Bounce,
-     });
+      toast.success(loginUserData.data.msg, {
+        position: "top-center",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Bounce,
+      });
     }
     if (loginUserData.isError) {
       toast.error(loginUserData.error.data.msg, {
@@ -93,6 +94,22 @@ const Register = () => {
       });
     }
   }, [SignupUserData.isSuccess, SignupUserData.isError]);
+
+  if (SignupUserData.isLoading) {
+    return (
+      <Stack justifyContent={"center"} textAlign={"center"} height={"90vh"}>
+        <Loading />
+      </Stack>
+    );
+  }
+
+  if (loginUserData.isLoading) {
+    return (
+      <Stack justifyContent={"center"} textAlign={"center"} height={"90vh"}>
+        <Loading />
+      </Stack>
+    );
+  }
 
   return (
     <>

@@ -1,4 +1,4 @@
-import { Suspense, lazy, useCallback, useEffect, useState } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import {
   Avatar,
   Button,
@@ -29,7 +29,7 @@ const ProfileLayout = () => {
   const { data } = useUserDetailsQuery(params.id);
   const [followUser, followUserData] = useFollowUserMutation();
 
-  const { darkMode, myInfo, openEditProfileModal } = useSelector(
+  const { darkMode, myInfo } = useSelector(
     (state) => state.service
   );
 

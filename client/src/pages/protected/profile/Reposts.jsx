@@ -6,6 +6,7 @@ const Post = lazy(() => import("../../../components/home/Post"));
 
 const Reposts = () => {
   const { user } = useSelector((state) => state.service);
+  console.log(user);
 
   const _700 = useMediaQuery("(min-width:700px)");
 

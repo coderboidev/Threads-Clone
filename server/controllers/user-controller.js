@@ -109,7 +109,7 @@ exports.userDetails = async (req, res) => {
       })
       .populate({
         path: "reposts",
-        populate: [{ path: "likes" }, { path: "comments" }],
+        populate: [{ path: "likes" }, { path: "comments" }, { path: "admin" }],
       });
     res.status(200).json({ msg: "User details fetched !", user });
   } catch (err) {

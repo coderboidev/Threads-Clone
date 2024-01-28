@@ -5,6 +5,7 @@ const Loading = () => {
     <>
       <Stack
         flexDirection={"row"}
+        minHeight={"50vh"}
         width={"100%"}
         height={"100%"}
         justifyContent={"center"}

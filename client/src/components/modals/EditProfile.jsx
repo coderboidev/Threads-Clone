@@ -13,24 +13,30 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { editProfileModel } from "../../redux/slice";
 import { RxCross2 } from "react-icons/rx";
-import { useUpdateProfileMutation } from "../../redux/service";
+import {
+  useUpdateProfileMutation,
+  useUserDetailsQuery,
+} from "../../redux/service";
 import Loading from "../common/Loading";
 import { Bounce, toast } from "react-toastify";
+import { useParams } from "react-router-dom";
 
 const EditProfile = () => {
   const { openEditProfileModal, myInfo } = useSelector(
     (state) => state.service
   );
 
-  const [updateProfile, updateProfileData] = useUpdateProfileMutation();
-
-  const [pic, setPic] = useState();
-  const [bio, setBio] = useState();
-
-  const _700 = useMediaQuery("(min-width:700px)");
-
+  const params = useParams();
   const dispatch = useDispatch();
   const imgRef = useRef();
+
+  const [updateProfile, updateProfileData] = useUpdateProfileMutation();
+  const { refetch } = useUserDetailsQuery(params.id);
+
+  const [pic, setPic] = useState();
+  const [bio, setBio] = useState(myInfo?.bio);
+
+  const _700 = useMediaQuery("(min-width:700px)");
 
   const handleClose = () => {
     dispatch(editProfileModel(false));
@@ -52,6 +58,7 @@ const EditProfile = () => {
 
   useEffect(() => {
     if (updateProfileData.isSuccess) {
+      refetch();
       toast.success(updateProfileData.data.msg, {
         position: "top-center",
         autoClose: 2500,
@@ -173,7 +180,7 @@ const EditProfile = () => {
                   type="text"
                   className="text1"
                   placeholder={myInfo ? myInfo.bio : ""}
-                  value={bio ? bio : myInfo ? myInfo.bio : ""}
+                  value={bio ? bio : ""}
                   onChange={(e) => setBio(e.target.value)}
                 />
               </Stack>
