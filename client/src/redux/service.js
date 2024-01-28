@@ -10,8 +10,7 @@ import {
 export const serviceApi = createApi({
   reducerPath: "serviceApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:5000/api/",
-    // "https://threads-clone-backend-9rt6v7za3-webdev-adis-projects.vercel.app/",
+    baseUrl: "https://threads-clone-mu-ten.vercel.app/api/",
     credentials: "include",
   }),
   keepUnusedDataFor: 60 * 60 * 24 * 7,
