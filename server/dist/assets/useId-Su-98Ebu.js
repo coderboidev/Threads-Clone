@@ -1,0 +1,1 @@
+import{r as n,a9 as l}from"./index-ejOMQ5mP.js";let u=0;function c(t){const[e,s]=n.useState(t),o=t||e;return n.useEffect(()=>{e==null&&(u+=1,s(`mui-${u}`))},[e]),o}const a=l.useId;function r(t){if(a!==void 0){const e=a();return t??e}return c(t)}export{r as u};
